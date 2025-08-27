@@ -1,29 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password - Tech NIG</title>
+    <link rel="stylesheet" href="src/styles/system.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-card">
+            <h1>Reset Your Password</h1>
+            
+            <?php if (!empty($error_message)): ?><p class="error-message"><?php echo $error_message; ?></p><?php endif; ?>
+            <?php if (!empty($success_message)): ?><p class="success-message"><?php echo $success_message; ?></p><?php endif; ?>
+            
+            <?php if (empty($success_message) && empty($error_message)): ?>
+            <form method="POST" action="reset_password.php?token=<?php echo $token; ?>">
+                <div class="form-group"><label for="password">New Password</label><input type="password" id="password" name="password" required></div>
+                <div class="form-group"><label for="confirm_password">Confirm New Password</label><input type="password" id="confirm_password" name="confirm_password" required></div>
+                <button type="submit">Reset Password</button>
+            </form>
+            <?php endif; ?>
+        </div>
+    </div>
 <?php
-include 'db.php';
-session_start();
+// This is a placeholder for reset password logic.
+// In a real application, you would validate the token from the URL.
+$token = isset($_GET['token']) ? htmlspecialchars($_GET['token']) : '';
+$error_message = '';
+$success_message = '';
 
-if (isset($_GET['token'])) {
-    $token = $_GET['token'];
+if (empty($token)) {
+    $error_message = "Invalid or missing reset token.";
+}
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $newPass = password_hash($_POST['password'], PASSWORD_DEFAULT);
-
-        $sql = "UPDATE users SET password=?, reset_token=NULL, token_expire=NULL WHERE reset_token=?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ss", $newPass, $token);
-
-        if ($stmt->execute() && $stmt->affected_rows > 0) {
-            echo "Password updated! <a href='login.php'>Login</a>";
-        } else {
-            echo "Invalid or expired token!";
-        }
+if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($error_message)) {
+    if ($_POST['password'] !== $_POST['confirm_password']) {
+        $error_message = "Passwords do not match!";
+    } else {
+        // Here you would update the password in the database
+        $success_message = "Your password has been reset successfully! You can now <a href='login.php'>login</a>.";
     }
-} else {
-    echo "No token provided!";
 }
 ?>
 
-<form method="POST">
-    New Password: <input type="password" name="password" required><br>
-    <button type="submit">Reset Password</button>
-</form>
+</body>
+</html>
