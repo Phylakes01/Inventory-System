@@ -3,24 +3,50 @@ include 'db.php';
 
 $error_message = '';
 $success_message = '';
+$token_valid = false;
 
-// In a real application, you would get the token from the URL
-// For example: reset_password.php?token=some_token
-$token = $_GET['token'] ?? '';
+if (isset($_GET['token'])) {
+    $token = $_GET['token'];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $password = $_POST['password'];
-    $password_confirm = $_POST['password_confirm'];
+    $stmt = $conn->prepare("SELECT id, token_expire FROM users WHERE reset_token = ?");
+    $stmt->bind_param("s", $token);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if (empty($password) || empty($password_confirm)) {
-        $error_message = "Please enter and confirm your new password.";
-    } elseif ($password !== $password_confirm) {
-        $error_message = "Passwords do not match.";
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+        $token_expire = strtotime($user['token_expire']);
+        if ($token_expire > time()) {
+            $token_valid = true;
+        } else {
+            $error_message = "Password reset link has expired.";
+        }
     } else {
-        // In a real application, you would validate the token and update the user's password
-        $success_message = "Your password has been reset successfully!";
+        $error_message = "Invalid password reset link.";
     }
 }
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['reset_password'])) {
+    $token = $_POST['token'];
+    $new_password = $_POST['new_password'];
+    $confirm_password = $_POST['confirm_password'];
+
+    if (empty($new_password) || empty($confirm_password)) {
+        $error_message = "Please enter a new password and confirm it.";
+    } elseif ($new_password !== $confirm_password) {
+        $error_message = "Passwords do not match.";
+    } else {
+        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+        $stmt = $conn->prepare("UPDATE users SET password = ?, reset_token = NULL, token_expire = NULL WHERE reset_token = ?");
+        $stmt->bind_param("ss", $hashed_password, $token);
+        if ($stmt->execute()) {
+            $success_message = "Your password has been reset successfully. You can now <a href='login.php'>login</a>.";
+        } else {
+            $error_message = "Failed to reset password. Please try again.";
+        }
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,20 +67,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php if (!empty($success_message)): ?>
                 <p class="success"><?php echo htmlspecialchars($success_message, ENT_QUOTES, 'UTF-8'); ?></p>
             <?php endif; ?>
-            <form method="POST" action="reset_password.php?token=<?php echo htmlspecialchars($token, ENT_QUOTES, 'UTF-8'); ?>">
-                <div class="form-group">
-                    <label for="password">New Password:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <div class="form-group">
-                    <label for="password_confirm">Confirm New Password:</label>
-                    <input type="password" id="password_confirm" name="password_confirm" required>
-                </div>
-                <button type="submit">Reset Password</button>
-            </form>
-            <div class="links">
-                <a href="login.php">Back to Login</a>
-            </div>
+
+            <?php if ($token_valid): ?>
+                <form method="POST" action="reset_password.php?token=<?php echo htmlspecialchars($_GET['token']); ?>">
+                    <input type="hidden" name="token" value="<?php echo htmlspecialchars($_GET['token']); ?>">
+                    <div class="form-group">
+                        <label for="new_password">New Password:</label>
+                        <input type="password" id="new_password" name="new_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm New Password:</label>
+                        <input type="password" id="confirm_password" name="confirm_password" required>
+                    </div>
+                    <button type="submit" name="reset_password">Reset Password</button>
+                </form>
+            <?php endif; ?>
         </div>
     </div>
 </body>

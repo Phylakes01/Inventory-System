@@ -1,36 +1,7 @@
 <?php
 include 'db.php';
 session_start();
-
-// Check if the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
-}
-
-$user_id = $_SESSION['user_id'];
-
-// Fetch user settings
-$settings_query = "SELECT * FROM user_settings WHERE user_id = ?";
-$stmt = $conn->prepare($settings_query);
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$settings = $result->fetch_assoc();
-
-// If no settings found, create a default entry
-if (!$settings) {
-    $insert_default_settings = "INSERT INTO user_settings (user_id) VALUES (?)";
-    $stmt = $conn->prepare($insert_default_settings);
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    // Refetch settings
-    $stmt = $conn->prepare($settings_query);
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $settings = $result->fetch_assoc();
-}
+include 'apply_settings.php';
 
 $error_message = '';
 $success_message = '';
@@ -109,19 +80,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body class="<?php echo $settings['dark_mode'] ? 'dark-mode' : ''; ?> <?php echo $settings['high_contrast_mode'] ? 'high-contrast' : ''; ?>">
     <div class="d-flex" id="wrapper">
         <!-- Sidebar -->
-        <div class="border-right sidebar-themed" id="sidebar-wrapper" style="<?php echo $settings['sidebar_collapsible'] ? '' : 'display: none;'; ?>">
-            <div class="sidebar-heading">Smart Inventory</div>
+        <div class="bg-dark border-right" id="sidebar-wrapper" style="<?php echo $settings['sidebar_collapsible'] ? '' : 'display: none;'; ?>">
+            <div class="sidebar-heading text-white">Smart Inventory</div>
             <div class="list-group list-group-flush">
-                <a href="dashboard.php" class="list-group-item list-group-item-action sidebar-themed-item"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
-                <a href="products.php" class="list-group-item list-group-item-action sidebar-themed-item"><i class="fas fa-box me-2"></i>Products</a>
-                <a href="add_product.php" class="list-group-item list-group-item-action sidebar-themed-item"><i class="fas fa-plus me-2"></i>Add Product</a>
-                <a href="categories.php" class="list-group-item list-group-item-action sidebar-themed-item"><i class="fas fa-tags me-2"></i>Categories</a>
-                <a href="add_category.php" class="list-group-item list-group-item-action sidebar-themed-item"><i class="fas fa-plus me-2"></i>Add Category</a>
-                <a href="suppliers.php" class="list-group-item list-group-item-action sidebar-themed-item"><i class="fas fa-truck me-2"></i>Suppliers</a>
-                <a href="add_supplier.php" class="list-group-item list-group-item-action sidebar-themed-item"><i class="fas fa-plus me-2"></i>Add Supplier</a>
-                <a href="sales_orders.php" class="list-group-item list-group-item-action sidebar-themed-item"><i class="fas fa-shopping-cart me-2"></i>Sales/Orders</a>
-                <a href="reports_analytics.php" class="list-group-item list-group-item-action sidebar-themed-item"><i class="fas fa-chart-bar me-2"></i>Reports & Analytics</a>
-                <a href="settings.php" class="list-group-item list-group-item-action sidebar-themed-item"><i class="fas fa-cog me-2"></i>Settings</a>
+                <a href="dashboard.php" class="list-group-item list-group-item-action bg-dark text-white"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
+                <a href="products.php" class="list-group-item list-group-item-action bg-dark text-white"><i class="fas fa-box me-2"></i>Products</a>
+                <a href="add_product.php" class="list-group-item list-group-item-action bg-dark text-white"><i class="fas fa-plus me-2"></i>Add Product</a>
+                <a href="categories.php" class="list-group-item list-group-item-action bg-dark text-white"><i class="fas fa-tags me-2"></i>Categories</a>
+                <a href="add_category.php" class="list-group-item list-group-item-action bg-dark text-white"><i class="fas fa-plus me-2"></i>Add Category</a>
+                <a href="suppliers.php" class="list-group-item list-group-item-action bg-dark text-white"><i class="fas fa-truck me-2"></i>Suppliers</a>
+                <a href="add_supplier.php" class="list-group-item list-group-item-action bg-dark text-white"><i class="fas fa-plus me-2"></i>Add Supplier</a>
+                <a href="sales_orders.php" class="list-group-item list-group-item-action bg-dark text-white"><i class="fas fa-shopping-cart me-2"></i>Sales/Orders</a>
+                <a href="reports_analytics.php" class="list-group-item list-group-item-action bg-dark text-white"><i class="fas fa-chart-bar me-2"></i>Reports & Analytics</a>
+                <a href="settings.php" class="list-group-item list-group-item-action bg-dark text-white"><i class="fas fa-cog me-2"></i>Settings</a>
             </div>
         </div>
         <!-- /#sidebar-wrapper -->

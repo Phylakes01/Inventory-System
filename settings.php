@@ -1,36 +1,7 @@
 <?php
 session_start();
 include 'db.php';
-
-// Check if the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
-}
-
-$user_id = $_SESSION['user_id'];
-
-// Fetch user settings
-$settings_query = "SELECT * FROM user_settings WHERE user_id = ?";
-$stmt = $conn->prepare($settings_query);
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$settings = $result->fetch_assoc();
-
-// If no settings found, create a default entry
-if (!$settings) {
-    $insert_default_settings = "INSERT INTO user_settings (user_id) VALUES (?)";
-    $stmt = $conn->prepare($insert_default_settings);
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    // Refetch settings
-    $stmt = $conn->prepare($settings_query);
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $settings = $result->fetch_assoc();
-}
+include 'apply_settings.php';
 
 // Update settings
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -198,33 +169,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <option <?php echo $settings['font_family'] === 'Monospace' ? 'selected' : ''; ?>>Monospace</option>
                                         </select>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="colorThemeSelect" class="form-label">Color Theme Selection 🎨</label>
-                                        <div class="d-flex align-items-center">
-                                            <select class="form-select me-2" id="colorThemeSelect" name="color_theme">
-                                                <option value="#1FC1FF" <?php echo $settings['color_theme'] === '#1FC1FF' ? 'selected' : ''; ?>>Blue (1FC1FF)</option>
-                                                <option value="#FF1FFB" <?php echo $settings['color_theme'] === '#FF1FFB' ? 'selected' : ''; ?>>Pink (FF1FFB)</option>
-                                                <option value="#1FFF8F" <?php echo $settings['color_theme'] === '#1FFF8F' ? 'selected' : ''; ?>>Green (1FFF8F)</option>
-                                                <option value="#FF0000" <?php echo $settings['color_theme'] === '#FF0000' ? 'selected' : ''; ?>>Red (FF0000)</option>
-                                            </select>
-                                            <div id="selectedColorCircle" style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background-color: <?php echo htmlspecialchars($settings['color_theme']); ?>;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Layout Options 📐</label>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="layout" id="compactLayout" value="Compact" <?php echo $settings['layout'] === 'Compact' ? 'checked' : ''; ?>>
-                                            <label class="form-check-label" for="compactLayout">
-                                                Compact
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="layout" id="spaciousLayout" value="Spacious" <?php echo $settings['layout'] === 'Spacious' ? 'checked' : ''; ?>>
-                                            <label class="form-check-label" for="spaciousLayout">
-                                                Spacious
-                                            </label>
-                                        </div>
-                                    </div>
+                                    
                                     <div class="mb-3">
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" id="sidebarToggle" name="sidebar_collapsible" <?php echo $settings['sidebar_collapsible'] ? 'checked' : ''; ?>>

@@ -1,6 +1,12 @@
 <?php
 include 'db.php';
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+require 'vendor/autoload.php';
+
 $error_message = '';
 $success_message = '';
 
@@ -10,10 +16,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($email)) {
         $error_message = "Email is required.";
     } else {
-        // For demonstration purposes, we'll just show a success message.
-        // In a real application, you would generate a reset token, save it to the database,
-        // and send an email to the user with a reset link.
-        $success_message = "If an account with that email exists, a password reset link has been sent.";
+        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $token = bin2hex(random_bytes(50));
+            $expire = date("Y-m-d H:i:s", strtotime('+1 hour'));
+
+            $stmt = $conn->prepare("UPDATE users SET reset_token = ?, token_expire = ? WHERE email = ?");
+            $stmt->bind_param("sss", $token, $expire, $email);
+            $stmt->execute();
+
+            $reset_link = "http://localhost/Tech%20NIG/reset_password.php?token=" . $token;
+
+            $mail = new PHPMailer(true);
+
+            try {
+                //Server settings
+                $mail->isSMTP();
+                $mail->Host       = 'smtp.gmail.com';
+                $mail->SMTPAuth   = true;
+                $mail->Username   = 'jeremiahtemporado@gmail.com';
+                $mail->Password   = 'ugnb exfy djwn nvzm';
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                $mail->Port       = 465;
+
+                //Recipients
+                $mail->setFrom('jeremiahtemporado@gmail.com', 'Tech NIG');
+                $mail->addAddress($email);
+
+                //Content
+                $mail->isHTML(true);
+                $mail->Subject = 'Password Reset Request';
+                $mail->Body    = 'Click the following link to reset your password: <a href="' . $reset_link . '">' . $reset_link . '</a>';
+
+                $mail->send();
+                $success_message = 'If an account with that email exists, a password reset link has been sent.';
+            } catch (Exception $e) {
+                $error_message = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
+        } else {
+            $success_message = "If an account with that email exists, a password reset link has been sent.";
+        }
     }
 }
 ?>
@@ -45,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="submit">Send Reset Link</button>
             </form>
             <div class="links">
-                <a href="login.php">Back to Login</a>
+                <p><a href="login.php">Back to Login</a></p>
             </div>
         </div>
     </div>
