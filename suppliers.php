@@ -84,39 +84,41 @@ $suppliers = $conn->query("SELECT * FROM suppliers");
                 <h1 class="mt-4">Suppliers</h1>
                 <div class="card mt-4">
                     <div class="card-body">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Supplier Name</th>
-                                    <th>Contact Person</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if ($suppliers->num_rows > 0): ?>
-                                    <?php while($row = $suppliers->fetch_assoc()): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($row['id']); ?></td>
-                                            <td><?php echo htmlspecialchars($row['name']); ?></td>
-                                            <td><?php echo htmlspecialchars($row['contact_person']); ?></td>
-                                            <td><?php echo htmlspecialchars($row['email']); ?></td>
-                                            <td><?php echo htmlspecialchars($row['phone']); ?></td>
-                                            <td>
-                                                <a href="#" class="btn btn-primary btn-sm">Edit</a>
-                                                <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                                            </td>
-                                        </tr>
-                                    <?php endwhile; ?>
-                                <?php else: ?>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
                                     <tr>
-                                        <td colspan="6" class="text-center">No suppliers found</td>
+                                        <th>ID</th>
+                                        <th>Supplier Name</th>
+                                        <th>Contact Person</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Actions</th>
                                     </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <?php if ($suppliers->num_rows > 0): ?>
+                                        <?php while($row = $suppliers->fetch_assoc()): ?>
+                                            <tr>
+                                                <td><?php echo htmlspecialchars($row['id']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['name']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['contact_person']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['email']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['phone']); ?></td>
+                                                <td>
+                                                    <a href="#" class="btn btn-primary btn-sm">Edit</a>
+                                                    <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                                                </td>
+                                            </tr>
+                                        <?php endwhile; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="6" class="text-center">No suppliers found</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

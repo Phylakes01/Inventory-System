@@ -97,14 +97,14 @@ body {
 }
 
 #menu-toggle {
-    background-color: #C6CEBE;
-    border-color: #C6CEBE;
+    background-color: #468a51;
+    border-color: #468a51;
     color: #fff;
 }
 
 #menu-toggle:hover {
-    background-color: #AAB59E;
-    border-color: #AAB59E;
+    background-color: #C6CEBE;
+    border-color: #C6CEBE;
 }
 
 /* KPI Card styling */
@@ -112,14 +112,14 @@ body {
 /* KPI Card styling */
 
 a.btn.btn-primary.btn-sm {
-    background-color: #C3B0C4;
-    border-color: #C3B0C4;
+    background-color: #468a51;
+    border-color: #468a51;
     color: #fff;
 }
 
 a.btn.btn-primary.btn-sm:hover {
-    background-color: #9E8DA0;
-    border-color: #9E8DA0;
+    background-color: #C3B0C4;
+    border-color: #C3B0C4;
 }
 
 .card-body i {
@@ -179,7 +179,7 @@ button[type="submit"] {
     padding: 0.75rem;
     border: none;
     border-radius: 4px;
-    background-color: #C6CEBE;
+    background-color: #468a51;
     color: white;
     font-size: 1rem;
     cursor: pointer;
@@ -187,7 +187,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #AAB59E;
+    background-color: #C6CEBE;
 }
 
 .links {
@@ -259,6 +259,6 @@ button[type="submit"]:hover {
 
     .navbar .navbar-nav .nav-item {
         width: 100%; /* Ensure each nav item takes full width */
-        text-align: center; /* Center align nav items */
+        text-align: end; /* Center align nav items */
     }
 }
