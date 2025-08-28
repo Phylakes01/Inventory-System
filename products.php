@@ -66,7 +66,7 @@ $products = $conn->query($sql);
 
         <!-- Page Content -->
         <div id="page-content-wrapper">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom">
                 <div class="container-fluid">
                     <button class="btn btn-primary" id="menu-toggle"><i class="fas fa-bars"></i></button>
                     <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
@@ -88,41 +88,43 @@ $products = $conn->query($sql);
                 <h1 class="mt-4">Products</h1>
                 <div class="card mt-4">
                     <div class="card-body">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Image</th>
-                                    <th>Product Name</th>
-                                    <th>Category</th>
-                                    <th>Supplier</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if ($products->num_rows > 0): ?>
-                                    <?php while($row = $products->fetch_assoc()): ?>
-                                        <tr>
-                                            <td><img src="<?php echo htmlspecialchars($row['image_path']); ?>" alt="<?php echo htmlspecialchars($row['name']); ?>" width="50"></td>
-                                            <td><?php echo htmlspecialchars($row['name']); ?></td>
-                                            <td><?php echo htmlspecialchars($row['category']); ?></td>
-                                            <td><?php echo htmlspecialchars($row['supplier']); ?></td>
-                                            <td><?php echo htmlspecialchars($row['quantity']); ?></td>
-                                            <td>$<?php echo htmlspecialchars($row['price']); ?></td>
-                                            <td>
-                                                <a href="#" class="btn btn-primary btn-sm">Edit</a>
-                                                <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                                            </td>
-                                        </tr>
-                                    <?php endwhile; ?>
-                                <?php else: ?>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
                                     <tr>
-                                        <td colspan="7" class="text-center">No products found</td>
+                                        <th>Image</th>
+                                        <th>Product Name</th>
+                                        <th>Category</th>
+                                        <th>Supplier</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Actions</th>
                                     </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <?php if ($products->num_rows > 0): ?>
+                                        <?php while($row = $products->fetch_assoc()): ?>
+                                            <tr>
+                                                <td><img src="<?php echo htmlspecialchars($row['image_path']); ?>" alt="<?php echo htmlspecialchars($row['name']); ?>" class="img-fluid"></td>
+                                                <td><?php echo htmlspecialchars($row['name']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['category']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['supplier']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['quantity']); ?></td>
+                                                <td>$<?php echo htmlspecialchars($row['price']); ?></td>
+                                                <td>
+                                                    <a href="#" class="btn btn-primary btn-sm">Edit</a>
+                                                    <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                                                </td>
+                                            </tr>
+                                        <?php endwhile; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="7" class="text-center">No products found</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

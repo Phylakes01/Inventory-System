@@ -229,32 +229,34 @@ $low_stock_alerts_result = $conn->query($low_stock_alerts_query);
                                 Low Stock Items
                             </div>
                             <div class="card-body">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Product Name</th>
-                                            <th>Remaining Quantity</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $low_stock_products_query = "SELECT name, quantity FROM products WHERE quantity < 10 ORDER BY quantity ASC";
-                                        $low_stock_products_result = $conn->query($low_stock_products_query);
-                                        if ($low_stock_products_result->num_rows > 0) {
-                                            while($row = $low_stock_products_result->fetch_assoc()) {
-                                                echo "<tr>";
-                                                echo "<td>" . htmlspecialchars($row['name']) . "</td>";
-                                                echo "<td>" . htmlspecialchars($row['quantity']) . "</td>";
-                                                echo "<td><button class=\"btn btn-warning btn-sm\">Reorder</button></td>";
-                                                echo "</tr>";
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Product Name</th>
+                                                <th>Remaining Quantity</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $low_stock_products_query = "SELECT name, quantity FROM products WHERE quantity < 10 ORDER BY quantity ASC";
+                                            $low_stock_products_result = $conn->query($low_stock_products_query);
+                                            if ($low_stock_products_result->num_rows > 0) {
+                                                while($row = $low_stock_products_result->fetch_assoc()) {
+                                                    echo "<tr>";
+                                                    echo "<td>" . htmlspecialchars($row['name']) . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['quantity']) . "</td>";
+                                                    echo "<td><button class=\"btn btn-warning btn-sm\">Reorder</button></td>";
+                                                    echo "</tr>";
+                                                }
+                                            } else {
+                                                echo "<tr><td colspan=\"3\" class=\"text-center\">No low stock items</td></tr>";
                                             }
-                                        } else {
-                                            echo "<tr><td colspan=\"3\" class=\"text-center\">No low stock items</td></tr>";
-                                        }
-                                        ?>
-                                    </tbody>
-                                </table>
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
