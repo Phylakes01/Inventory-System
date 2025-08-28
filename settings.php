@@ -3,13 +3,15 @@ session_start();
 include 'db.php';
 include 'apply_settings.php';
 
+
+
 // Update settings
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $dark_mode = isset($_POST['dark_mode']) ? 1 : 0;
     $font_size = $_POST['font_size'];
     $font_family = $_POST['font_family'];
-    $color_theme = $_POST['color_theme'];
-    $layout = $_POST['layout'];
+    $color_theme = isset($_POST['color_theme']) ? $_POST['color_theme'] : $settings['color_theme'];
+    $layout = isset($_POST['layout']) ? $_POST['layout'] : $settings['layout'];
     $sidebar_collapsible = isset($_POST['sidebar_collapsible']) ? 1 : 0;
     $language = $_POST['language'];
     $date_format = $_POST['date_format'];
@@ -169,6 +171,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <option <?php echo $settings['font_family'] === 'Monospace' ? 'selected' : ''; ?>>Monospace</option>
                                         </select>
                                     </div>
+                                    
+                                    
                                     
                                     <div class="mb-3">
                                         <div class="form-check form-switch">

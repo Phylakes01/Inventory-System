@@ -45,6 +45,59 @@ body {
     }
 }
 
+body {
+    overflow-x: hidden;
+    font-family: 'Roboto', sans-serif;
+    background-color: #FCF4F0;
+}
+
+/* Sidebar styling */
+#sidebar-wrapper {
+    min-height: 100vh;
+    margin-left: -15rem;
+    transition: margin .25s ease-out;
+    background-color: #EDD5D8;
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+}
+
+#sidebar-wrapper .list-group {
+    width: 15rem;
+}
+
+/* Page content wrapper */
+#page-content-wrapper {
+    min-width: 100vw;
+}
+
+/* Toggled sidebar */
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+}
+
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: -15rem;
+    }
+}
+
+/* Navigation Bar styling */
+.navbar {
+    background-color: #C6CEBE !important;
+}
+
 /* KPI Card styling */
 .card-body i {
     opacity: 0.3;
